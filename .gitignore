@@ -1,0 +1,4 @@
+.env
+monitoring/
+.DS_Store
+.idea
