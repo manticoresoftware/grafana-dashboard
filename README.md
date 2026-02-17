@@ -2,6 +2,13 @@
 
 Monitoring stack for Manticore Search instances — a single Docker image with Grafana and Prometheus pre-configured with dashboards and alert rules.
 
+![Dashboard preview 1](preview1.png)
+![Dashboard preview 2](preview2.png)
+![Dashboard preview 3](preview3.png)
+![Dashboard preview 4](preview4.png)
+![Dashboard preview 5](preview5.png)
+![Dashboard preview 6](preview6.png)
+
 ## Quick start
 
 ```bash
