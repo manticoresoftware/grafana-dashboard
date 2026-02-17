@@ -142,9 +142,10 @@
       },
       "targets": [
         {
-          "expr": "max(manticore_uptime_seconds_gauge{job=\"$job\",instance=~\"$instance\"})",
+          "expr": "max(manticore_uptime_seconds_gauge{job=\"$job\",instance=~\"$instance\"}) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
           "legendFormat": "ManticoreSearch",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "fieldConfig": {
@@ -161,7 +162,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "values": false
         }
@@ -284,9 +285,10 @@
       },
       "targets": [
         {
-          "expr": "max(manticore_current_connections_count{job=\"$job\",instance=~\"$instance\"})",
+          "expr": "max(manticore_current_connections_count{job=\"$job\",instance=~\"$instance\"}) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
           "legendFormat": "ManticoreSearch",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "fieldConfig": {
@@ -299,7 +301,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "values": false
         }
@@ -322,9 +324,10 @@
       },
       "targets": [
         {
-          "expr": "max(manticore_connect_time_seconds{job=\"$job\",instance=~\"$instance\"})",
+          "expr": "max(manticore_connect_time_seconds{job=\"$job\",instance=~\"$instance\"}) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
           "legendFormat": "ManticoreSearch",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "fieldConfig": {
@@ -357,7 +360,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "values": false
         }
@@ -380,7 +383,7 @@
       },
       "targets": [
         {
-          "expr": "min(manticore_connect_ok{job=\"$job\",instance=~\"$instance\"})",
+          "expr": "min(up{job=\"$job\",instance=~\"$instance\"})",
           "refId": "A"
         }
       ],
@@ -422,7 +425,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "values": false
         }
@@ -446,9 +449,10 @@
       },
       "targets": [
         {
-          "expr": "1 - clamp_max((sum(increase(manticore_searchd_crashes_total{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)), 1)",
+          "expr": "(1 - clamp_max((sum(increase(manticore_searchd_crashes_total{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)), 1)) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
           "legendFormat": "crash_indicator",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "fieldConfig": {
@@ -489,7 +493,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "values": false
         }
@@ -1610,9 +1614,10 @@
       },
       "targets": [
         {
-          "expr": "clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 0) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1)",
+          "expr": "(clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 0) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1)) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
           "legendFormat": "queue/workers_total",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ],
       "fieldConfig": {
@@ -1645,7 +1650,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "values": false
         }
@@ -1669,8 +1674,9 @@
       },
       "targets": [
         {
-          "expr": "clamp_min(clamp_max(100 - ((clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 0) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1)) * 20) - ((max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"} / clamp_min(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}, 1)) > bool 0.9) * 10) - (((sum(increase(manticore_maxed_out_error_count{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 30) - (((sum(increase(manticore_searchd_crashes_total{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 40), 100), 0)",
-          "refId": "A"
+          "expr": "clamp_min(clamp_max(100 - ((clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 0) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1)) * 20) - ((max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"} / clamp_min(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}, 1)) > bool 0.9) * 10) - (((sum(increase(manticore_maxed_out_error_count{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 30) - (((sum(increase(manticore_searchd_crashes_total{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 40), 100), 0) * on() min(up{job=\"$job\",instance=~\"$instance\"})",
+          "refId": "A",
+          "instant": true
         }
       ],
       "fieldConfig": {
@@ -1736,7 +1742,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "values": false
         },
@@ -2168,7 +2174,7 @@
       },
       "targets": [
         {
-          "expr": "increase(manticore_maxed_out_error_count{job=\"$job\",instance=~\"$instance\"}[$__range])",
+          "expr": "increase(manticore_maxed_out_error_count{job=\"$job\",instance=~\"$instance\"}[$__range]) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
           "refId": "A",
           "instant": true
         }
@@ -2199,7 +2205,7 @@
       "options": {
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "values": false
         }
@@ -2221,8 +2227,9 @@
       },
       "targets": [
         {
-          "expr": "100 * max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"}) / max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"})",
-          "refId": "A"
+          "expr": "(100 * max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"}) / max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"})) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
+          "refId": "A",
+          "instant": true
         }
       ],
       "fieldConfig": {
@@ -2259,7 +2266,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "values": false
         },
