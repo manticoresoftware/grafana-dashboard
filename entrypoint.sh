@@ -43,4 +43,14 @@ sed -i "s|targets: \[\]|targets:${TARGETS}|" /etc/prometheus/prometheus.yml
 
 echo "Manticore targets: ${MANTICORE_TARGETS}"
 
+# Configure Grafana authentication
+if [ "$GF_AUTH_ENABLED" = "true" ]; then
+  echo "Grafana authentication: enabled"
+else
+  export GF_AUTH_ANONYMOUS_ENABLED=true
+  export GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+  export GF_AUTH_BASIC_ENABLED=false
+  echo "Grafana authentication: disabled (anonymous admin access)"
+fi
+
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

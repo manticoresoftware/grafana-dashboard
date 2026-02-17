@@ -24,6 +24,10 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Collapse Grafana sidebar by default (client-side localStorage preference)
+RUN sed -i 's|</head>|<script>if(localStorage.getItem("grafana.navigation.docked")===null)localStorage.setItem("grafana.navigation.docked","false")</script></head>|' \
+    /usr/share/grafana/public/views/index.html
+
 # Grafana provisioning (wipe defaults from deb, copy ours)
 RUN rm -rf /etc/grafana/provisioning/*
 COPY grafana/provisioning/ /etc/grafana/provisioning/
@@ -44,6 +48,8 @@ RUN chmod +x /entrypoint.sh
 
 ENV MANTICORE_TARGETS=localhost:9308
 ENV GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+ENV GF_AUTH_ENABLED=false
+ENV GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/manticore-dashboard.json
 
 EXPOSE 3000
 

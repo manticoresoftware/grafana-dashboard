@@ -13,6 +13,7 @@ docker run -e MANTICORE_TARGETS=localhost:9308 -p 3000:3000 manticoresearch/dash
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `MANTICORE_TARGETS` | `localhost:9308` | Comma-separated list of Manticore Search instances |
+| `GF_AUTH_ENABLED` | `false` | Set to `true` to enable Grafana login (default: anonymous admin access) |
 
 ### Multiple instances
 
@@ -22,7 +23,7 @@ docker run -e MANTICORE_TARGETS=node1:9308,node2:9308,node3:9308 -p 3000:3000 ma
 
 ## Access
 
-- Grafana: http://localhost:3000 (login `admin` / `admin`)
+- Grafana: http://localhost:3000 (no login required by default; set `GF_AUTH_ENABLED=true` to require login, default credentials: `admin` / `admin`)
 - Prometheus is available inside the container on port 9090
 
 ## How it works

@@ -34,8 +34,8 @@
         "query": "prometheus",
         "current": {
           "selected": false,
-          "text": "Prometheus",
-          "value": "Prometheus"
+          "text": "default",
+          "value": "default"
         }
       },
       {
