@@ -106,6 +106,39 @@
           "text": "All",
           "value": ".*"
         }
+      },
+      {
+        "name": "slack_url",
+        "type": "constant",
+        "hide": 2,
+        "query": "https://manticoresearch.com/slack/",
+        "current": {
+          "selected": false,
+          "text": "https://manticoresearch.com/slack/",
+          "value": "https://manticoresearch.com/slack/"
+        }
+      },
+      {
+        "name": "forum_url",
+        "type": "constant",
+        "hide": 2,
+        "query": "https://forum.manticoresearch.com/",
+        "current": {
+          "selected": false,
+          "text": "https://forum.manticoresearch.com/",
+          "value": "https://forum.manticoresearch.com/"
+        }
+      },
+      {
+        "name": "support_url",
+        "type": "constant",
+        "hide": 2,
+        "query": "https://manticoresearch.com/support/",
+        "current": {
+          "selected": false,
+          "text": "https://manticoresearch.com/support/",
+          "value": "https://manticoresearch.com/support/"
+        }
       }
     ]
   },
@@ -2730,16 +2763,19 @@
     },
     {
       "id": 48,
-      "type": "row",
-      "title": "Health",
-      "collapsed": false,
+      "type": "text",
+      "title": "",
+      "transparent": true,
       "gridPos": {
         "x": 0,
         "y": 0,
         "w": 24,
         "h": 1
       },
-      "panels": []
+      "options": {
+        "mode": "html",
+        "content": "<div style=\"display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 8px;\">\n  <div style=\"display:flex;align-items:center;gap:8px;\">\n    <img src=\"https://github.com/manticoresearch.png\" alt=\"Manticore\" style=\"height:18px;width:18px;border-radius:4px;\" />\n    <span style=\"font-size:13px;font-weight:600;\">Manticore Search</span>\n  </div>\n  <div style=\"display:flex;align-items:center;gap:14px;font-size:13px;\">\n    <a href=\"${slack_url}\" target=\"_blank\" rel=\"noopener\" style=\"font-weight:600;font-size:14px;text-decoration:none;\">Slack</a>\n    <a href=\"${forum_url}\" target=\"_blank\" rel=\"noopener\" style=\"font-weight:600;font-size:14px;text-decoration:none;\">Forum</a>\n    <a href=\"${support_url}\" target=\"_blank\" rel=\"noopener\" style=\"font-weight:600;font-size:14px;text-decoration:none;\">Support</a>\n  </div>\n</div>"
+      }
     },
     {
       "id": 49,

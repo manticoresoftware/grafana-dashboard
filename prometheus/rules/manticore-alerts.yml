@@ -9,6 +9,7 @@ groups:
         annotations:
           summary: Manticore target down
           description: Prometheus cannot scrape the Manticore metrics endpoint for 2 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreRecentlyRestarted
         expr: manticore_uptime_seconds{job="manticoresearch"} < 300
@@ -18,6 +19,7 @@ groups:
         annotations:
           summary: Manticore restarted recently
           description: Uptime is under 5 minutes for more than 5 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreMaxedOutErrors
         expr: increase(manticore_maxed_out_error_count{job="manticoresearch"}[5m]) > 0
@@ -27,6 +29,7 @@ groups:
         annotations:
           summary: maxed_out errors detected
           description: One or more maxed_out errors occurred in the last 5 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreSearchLatencyP95High
         expr: manticore_search_stats_ms_pct95_5m_millisecond{job="manticoresearch"} > 500
@@ -36,6 +39,7 @@ groups:
         annotations:
           summary: High search latency (p95)
           description: 95th percentile search latency is above 500 ms for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreSearchLatencyP99High
         expr: manticore_search_stats_ms_pct99_5m_millisecond{job="manticoresearch"} > 1000
@@ -45,6 +49,7 @@ groups:
         annotations:
           summary: Very high search latency (p99)
           description: 99th percentile search latency is above 1000 ms for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreWorkQueueBacklog
         expr: manticore_work_queue_length_count{job="manticoresearch"} > 100
@@ -54,6 +59,7 @@ groups:
         annotations:
           summary: Work queue backlog
           description: Work queue length is above 100 for 5 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreWorkersSaturated
         expr: (manticore_workers_active_count{job="manticoresearch"} / manticore_workers_total_count{job="manticoresearch"}) > 0.9
@@ -63,6 +69,7 @@ groups:
         annotations:
           summary: Workers saturated
           description: More than 90% of worker threads are active for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreQueryCacheNearLimit
         expr: (manticore_qcache_used_bytes{job="manticoresearch"} / manticore_qcache_max_bytes{job="manticoresearch"}) > 0.9 and manticore_qcache_max_bytes{job="manticoresearch"} > 0
@@ -72,6 +79,7 @@ groups:
         annotations:
           summary: Query cache near limit
           description: Query cache usage is above 90% of configured max for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreAgentRetryCountHigh
         expr: increase(manticore_agent_retry_count{job="manticoresearch"}[5m]) > 10
@@ -81,6 +89,7 @@ groups:
         annotations:
           summary: agent retry spikes
           description: agent_retry_count increased by more than 10 in the last 5 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreCurrentConnectionsHigh
         expr: manticore_current_connections_count{job="manticoresearch"} > 500
@@ -90,6 +99,7 @@ groups:
         annotations:
           summary: Too many current connections
           description: current_connections_count is above 500 for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreSlowestThreadHigh
         expr: manticore_slowest_thread_seconds{job="manticoresearch"} > 30
@@ -99,6 +109,7 @@ groups:
         annotations:
           summary: Slowest thread is too slow
           description: slowest_thread_seconds is above 30 seconds for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreConnectTimeHigh
         expr: manticore_connect_time_seconds{job="manticoresearch"} > 0.2
@@ -108,6 +119,7 @@ groups:
         annotations:
           summary: High Manticore connectivity latency
           description: connect_time_seconds is above 0.2s for 5 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreSearchdCrashesRecently
         expr: increase(manticore_searchd_crashes_total{job="manticoresearch"}[10m]) > 0
@@ -117,6 +129,7 @@ groups:
         annotations:
           summary: searchd crash detected recently
           description: searchd_crashes_total increased within the last 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreBinlogFilesHigh
         expr: manticore_binlog_files_count{job="manticoresearch"} > 1000
@@ -126,6 +139,7 @@ groups:
         annotations:
           summary: Too many binlog files
           description: binlog_files_count is above 1000 for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreSearchdFdCountHigh
         expr: manticore_searchd_fd_count{job="manticoresearch"} > 4096
@@ -135,6 +149,7 @@ groups:
         annotations:
           summary: searchd file descriptors high
           description: searchd_fd_count is above 4096 for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreBuddyFdCountHigh
         expr: manticore_buddy_fd_count{job="manticoresearch"} > 4096
@@ -144,6 +159,7 @@ groups:
         annotations:
           summary: buddy file descriptors high
           description: buddy_fd_count is above 4096 for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreSearchdAnonRssHigh
         expr: manticore_searchd_anon_rss_bytes{job="manticoresearch"} > 8589934592
@@ -153,6 +169,7 @@ groups:
         annotations:
           summary: searchd anonymous RSS high
           description: searchd_anon_rss_bytes is above 8GiB for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreBuddyAnonRssHigh
         expr: manticore_buddy_anon_rss_bytes{job="manticoresearch"} > 8589934592
@@ -162,6 +179,7 @@ groups:
         annotations:
           summary: buddy anonymous RSS high
           description: buddy_anon_rss_bytes is above 8GiB for 10 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreNonServedTables
         expr: manticore_non_served_tables_count{job="manticoresearch"} > 0
@@ -171,6 +189,7 @@ groups:
         annotations:
           summary: Non-served tables detected
           description: One or more tables are present in manticore.json but missing in SHOW TABLES.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreDiskMappedCacheLow
         expr: manticore_disk_mapped_cached_ratio_percent{job="manticoresearch"} < 50
@@ -180,6 +199,7 @@ groups:
         annotations:
           summary: Low disk mapped cache ratio
           description: Disk mapped cache ratio is below 50% for 15 minutes.
+          runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreDiskMappedCacheVeryLow
         expr: manticore_disk_mapped_cached_ratio_percent{job="manticoresearch"} < 20
@@ -189,3 +209,4 @@ groups:
         annotations:
           summary: Very low disk mapped cache ratio
           description: Disk mapped cache ratio is below 20% for 15 minutes.
+          runbook_url: https://manticoresearch.com/support/
