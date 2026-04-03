@@ -1634,7 +1634,7 @@
       "id": 36,
       "type": "stat",
       "title": "Load / Queue pressure",
-      "description": "Backlog ratio: max(work_queue_length - workers_total, 0) / workers_total. 0% means no backlog.",
+      "description": "Queue pressure above the alert threshold: max(work_queue_length - 100, 0) / 100. 0% means the queue is within the normal range.",
       "datasource": {
         "type": "prometheus",
         "uid": "$datasource"
@@ -1647,7 +1647,7 @@
       },
       "targets": [
         {
-          "expr": "(clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 0) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1)) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
+          "expr": "(clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - 100, 0) / 100) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
           "legendFormat": "queue/workers_total",
           "refId": "A",
           "instant": true
@@ -1694,7 +1694,7 @@
       "id": 52,
       "type": "gauge",
       "title": "System Score",
-      "description": "Composite health score (0-100): 100 - queue_backlog_ratio*20 - (workers_utilization>0.9)*10 - (maxed_out>0)*30 - (crashes>0)*40.",
+      "description": "Composite health score (0-100): 100 - queue_pressure_above_threshold*20 - (workers_utilization>0.9)*10 - (maxed_out>0)*30 - (crashes>0)*40.",
       "datasource": {
         "type": "prometheus",
         "uid": "$datasource"
@@ -1707,7 +1707,7 @@
       },
       "targets": [
         {
-          "expr": "clamp_min(clamp_max(100 - ((clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 0) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1)) * 20) - ((max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"} / clamp_min(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}, 1)) > bool 0.9) * 10) - (((sum(increase(manticore_maxed_out_error_count{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 30) - (((sum(increase(manticore_searchd_crashes_total{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 40), 100), 0) * on() min(up{job=\"$job\",instance=~\"$instance\"})",
+          "expr": "clamp_min(clamp_max(100 - ((clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - 100, 0) / 100) * 20) - ((clamp_max(max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"}) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1), 1) > bool 0.9) * 10) - (((sum(increase(manticore_maxed_out_error_count{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 30) - (((sum(increase(manticore_searchd_crashes_total{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 40), 100), 0) * on() min(up{job=\"$job\",instance=~\"$instance\"})",
           "refId": "A",
           "instant": true
         }
@@ -2260,7 +2260,7 @@
       },
       "targets": [
         {
-          "expr": "(100 * max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"}) / max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"})) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
+          "expr": "(100 * clamp_max(max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"}) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1), 1)) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
           "refId": "A",
           "instant": true
         }
@@ -2305,7 +2305,7 @@
         },
         "showUnfilled": true
       },
-      "description": "100 * workers_active / workers_total."
+      "description": "100 * min(workers_active / workers_total, 1)."
     },
     {
       "id": 40,
@@ -2709,7 +2709,7 @@
       },
       "targets": [
         {
-          "expr": "max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"}) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1)",
+          "expr": "clamp_max(max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"}) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1), 1)",
           "legendFormat": "saturation",
           "refId": "A"
         }
@@ -2759,7 +2759,7 @@
           "sort": "desc"
         }
       },
-      "description": "workers_active / workers_total over time (spikes indicate saturation)."
+      "description": "min(workers_active / workers_total, 1) over time (spikes indicate saturation)."
     },
     {
       "id": 48,

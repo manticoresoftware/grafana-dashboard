@@ -1,0 +1,78 @@
+services:
+  manticore:
+    image: manticoresearch/manticore:latest
+    restart: unless-stopped
+    ports:
+      - "${MANTICORE_MYSQL_PORT:-9306}:9306"
+      - "${MANTICORE_HTTP_PORT:-9308}:9308"
+    volumes:
+      - manticore_data:/var/lib/manticore
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:9308/metrics >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
+  dashboard:
+    build:
+      context: .
+    restart: unless-stopped
+    environment:
+      MANTICORE_TARGETS: manticore:9308
+    ports:
+      - "${DASHBOARD_PORT:-3000}:3000"
+    depends_on:
+      manticore:
+        condition: service_healthy
+
+  seed:
+    image: manticoresearch/manticore:latest
+    profiles: ["seed"]
+    volumes:
+      - ./local/sql:/work/sql:ro
+      - ./local/scripts/seed.sh:/work/seed.sh:ro
+    entrypoint: ["/bin/sh", "/work/seed.sh"]
+    environment:
+      MANTICORE_HOST: manticore
+      MANTICORE_PORT: "9306"
+      SQL_FILE: /work/sql/seed.sql
+    depends_on:
+      manticore:
+        condition: service_healthy
+
+  loadgen:
+    image: manticoresearch/manticore:latest
+    profiles: ["load"]
+    volumes:
+      - ./local/scripts/loadgen.sh:/work/loadgen.sh:ro
+      - ./local/wordlists:/work/wordlists:ro
+    entrypoint: ["/bin/sh", "/work/loadgen.sh"]
+    environment:
+      MANTICORE_HOST: manticore
+      MANTICORE_PORT: "9306"
+      LOAD_THREADS: "8"
+      SEARCH_TOTAL: "4000"
+      INSERT_TOTAL: "1000"
+      INSERT_BATCH_SIZE: "200"
+    depends_on:
+      manticore:
+        condition: service_healthy
+
+  flushgen:
+    image: manticoresearch/manticore:latest
+    profiles: ["flush"]
+    volumes:
+      - ./local/scripts/flushgen.sh:/work/flushgen.sh:ro
+    entrypoint: ["/bin/sh", "/work/flushgen.sh"]
+    environment:
+      MANTICORE_HOST: manticore
+      MANTICORE_PORT: "9306"
+      LOAD_TABLE: dashboard_load
+      FLUSH_INTERVAL: "2"
+    depends_on:
+      manticore:
+        condition: service_healthy
+
+volumes:
+  manticore_data:
