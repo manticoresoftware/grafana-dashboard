@@ -2,10 +2,18 @@
 set -eu
 
 root_dir=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
+
+if [ -f "$root_dir/.env" ]; then
+  set -a
+  . "$root_dir/.env"
+  set +a
+fi
+
 compose_file="${COMPOSE_FILE:-$root_dir/docker-compose.local.yml}"
 dashboard_port="${DASHBOARD_PORT:-3300}"
 manticore_http_port="${MANTICORE_HTTP_PORT:-9308}"
 manticore_mysql_port="${MANTICORE_MYSQL_PORT:-9306}"
+dashboard_path="/d/manticore-search-prometheus/manticore-search-prometheus"
 
 compose() {
   DASHBOARD_PORT="$dashboard_port" \
@@ -54,7 +62,7 @@ sleep 5
 
 echo
 echo "Sandbox is ready."
-echo "Grafana:   http://localhost:${dashboard_port}"
+echo "Grafana:   http://localhost:${dashboard_port}${dashboard_path}"
 echo "MySQL:     localhost:${manticore_mysql_port}"
 echo "Metrics:   http://localhost:${manticore_http_port}/metrics"
 echo

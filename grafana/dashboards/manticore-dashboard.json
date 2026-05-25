@@ -1634,7 +1634,7 @@
       "id": 36,
       "type": "stat",
       "title": "Load / Queue pressure",
-      "description": "Queue pressure above the alert threshold: max(work_queue_length - 100, 0) / 100. 0% means the queue is within the normal range.",
+      "description": "Queue pressure above the table-adjusted alert threshold: max(work_queue_length - tables_count - 100, 0) / 100. 0% means the queue is within the normal range.",
       "datasource": {
         "type": "prometheus",
         "uid": "$datasource"
@@ -1647,8 +1647,8 @@
       },
       "targets": [
         {
-          "expr": "(clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - 100, 0) / 100) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
-          "legendFormat": "queue/workers_total",
+          "expr": "(clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - max(manticore_tables_count{job=\"$job\",instance=~\"$instance\"}) - 100, 0) / 100) * on() (min(up{job=\"$job\",instance=~\"$instance\"}) == 1)",
+          "legendFormat": "queue/table-adjusted-threshold",
           "refId": "A",
           "instant": true
         }
@@ -1694,7 +1694,7 @@
       "id": 52,
       "type": "gauge",
       "title": "System Score",
-      "description": "Composite health score (0-100): 100 - queue_pressure_above_threshold*20 - (workers_utilization>0.9)*10 - (maxed_out>0)*30 - (crashes>0)*40.",
+      "description": "Composite health score (0-100): 100 - table_adjusted_queue_pressure*20 - (workers_utilization>0.9)*10 - (maxed_out>0)*30 - (crashes>0)*40.",
       "datasource": {
         "type": "prometheus",
         "uid": "$datasource"
@@ -1707,7 +1707,7 @@
       },
       "targets": [
         {
-          "expr": "clamp_min(clamp_max(100 - ((clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - 100, 0) / 100) * 20) - ((clamp_max(max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"}) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1), 1) > bool 0.9) * 10) - (((sum(increase(manticore_maxed_out_error_count{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 30) - (((sum(increase(manticore_searchd_crashes_total{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 40), 100), 0) * on() min(up{job=\"$job\",instance=~\"$instance\"})",
+          "expr": "clamp_min(clamp_max(100 - ((clamp_min(max(manticore_work_queue_length_count{job=\"$job\",instance=~\"$instance\"}) - max(manticore_tables_count{job=\"$job\",instance=~\"$instance\"}) - 100, 0) / 100) * 20) - ((clamp_max(max(manticore_workers_active_count{job=\"$job\",instance=~\"$instance\"}) / clamp_min(max(manticore_workers_total_count{job=\"$job\",instance=~\"$instance\"}), 1), 1) > bool 0.9) * 10) - (((sum(increase(manticore_maxed_out_error_count{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 30) - (((sum(increase(manticore_searchd_crashes_total{job=\"$job\",instance=~\"$instance\"}[$__range])) or vector(0)) > bool 0) * 40), 100), 0) * on() min(up{job=\"$job\",instance=~\"$instance\"})",
           "refId": "A",
           "instant": true
         }

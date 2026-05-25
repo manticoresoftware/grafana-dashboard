@@ -52,13 +52,13 @@ groups:
           runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreWorkQueueBacklog
-        expr: manticore_work_queue_length_count{job="manticoresearch"} > 100
+        expr: manticore_work_queue_length_count{job="manticoresearch"} > (manticore_tables_count{job="manticoresearch"} + 100)
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: Work queue backlog
-          description: Work queue length is above 100 for 5 minutes.
+          description: Work queue length is more than 100 above table count for 5 minutes.
           runbook_url: https://manticoresearch.com/support/
 
       - alert: ManticoreWorkersSaturated
